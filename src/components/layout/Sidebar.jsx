@@ -55,7 +55,7 @@ export function Sidebar({
                 letterSpacing: "-0.01em",
               }}
             >
-              FormTrack
+              Xam Xam Elite
             </div>
             <div
               style={{
