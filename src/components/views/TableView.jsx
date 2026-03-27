@@ -13,9 +13,15 @@ import {
   ChevronsRight,
   Users,
   Download,
+  FileSpreadsheet,
+  FileText,
+  X,
 } from "lucide-react";
 import { Card } from "../ui/Card";
 import { SHEET_KEYS } from "../../config/constants";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 const DEFAULT_ITEMS_PER_PAGE = 10;
@@ -27,6 +33,7 @@ export function TableView({ data, allFormations, theme }) {
   // États pour la recherche et les filtres
   const [search, setSearch] = useState("");
   const [filterFormation, setFilterFormation] = useState("Tous");
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // États pour la pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,6 +108,224 @@ export function TableView({ data, allFormations, theme }) {
     theme.chart5,
   ];
 
+  // Fonction pour préparer les données d'export
+  const prepareExportData = () => {
+    return filteredData.map((r, index) => ({
+      "No": index + 1,
+      "Candidat": r[SHEET_KEYS.nom],
+      "Email": r[SHEET_KEYS.emailAddr] || r[SHEET_KEYS.email],
+      "Téléphone": r[SHEET_KEYS.telephone],
+      "Né(e) le": r[SHEET_KEYS.naissance],
+      "Niveau": r._niveau || r[SHEET_KEYS.niveau] || "N/A",
+      "Filière": r[SHEET_KEYS.filiere],
+      "Formation": r._formation,
+      "Mode": r._mode,
+    }));
+  };
+
+  // Export Excel
+  const exportToExcel = () => {
+    const exportData = prepareExportData();
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    
+    // Ajuster la largeur des colonnes
+    const colWidths = [
+      { wch: 5 }, { wch: 30 }, { wch: 35 }, { wch: 15 }, { wch: 15 },
+      { wch: 15 }, { wch: 25 }, { wch: 30 }, { wch: 12 }
+    ];
+    worksheet["!cols"] = colWidths;
+
+    // Style des en-têtes
+    const range = XLSX.utils.decode_range(worksheet["!ref"]);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const address = XLSX.utils.encode_col(C) + "1";
+      if (!worksheet[address]) continue;
+      worksheet[address].s = {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "15803D" } },
+        alignment: { horizontal: "center", vertical: "center" },
+      };
+    }
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidats");
+    
+    const fileName = `candidats_${new Date().toISOString().split("T")[0]}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+    setShowExportMenu(false);
+  };
+
+  // Export PDF
+  const exportToPDF = () => {
+    const doc = new jsPDF("l", "mm", "a4");
+    
+    // Charger et ajouter le logo
+    const logoPath = "/logoxamxam.jpg";
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const logoHeight = 35;
+    const logoMargin = 10;
+    const logoWidth = pageWidth - (logoMargin * 2);
+    
+    // Créer un élément image temporaire pour charger le logo
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = logoPath;
+    
+    img.onload = () => {
+      // Convertir l'image en base64
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const logoData = canvas.toDataURL("image/jpeg");
+      
+      // Ajouter le logo en pleine largeur en haut
+      doc.addImage(logoData, "JPEG", logoMargin, 10, logoWidth, logoHeight);
+      
+      // Titre (en dessous du logo, centré)
+      const titleY = 10 + logoHeight + 12;
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(21, 128, 61); // Vert entreprise
+      const titleWidth = doc.getTextWidth("Liste des candidats - Xam Xam Elite");
+      doc.text("Liste des candidats - Xam Xam Elite", (pageWidth - titleWidth) / 2, titleY);
+      
+      // Date (en dessous du titre)
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      const dateText = `Exporté le ${new Date().toLocaleDateString("fr-FR")}`;
+      const dateWidth = doc.getTextWidth(dateText);
+      doc.text(dateText, (pageWidth - dateWidth) / 2, titleY + 7);
+      
+      // Statistiques (en dessous de la date)
+      const statsText = `Total: ${filteredData.length} candidat(s)`;
+      const statsWidth = doc.getTextWidth(statsText);
+      doc.setFontSize(10);
+      doc.text(statsText, (pageWidth - statsWidth) / 2, titleY + 14);
+      
+      // Tableau
+      const exportData = prepareExportData();
+      const tableColumn = ["#", "Candidat", "Email", "Téléphone", "Niveau", "Filière", "Formation", "Mode"];
+      const tableRows = exportData.map(row => [
+        row["#"],
+        row["Candidat"],
+        row["Email"],
+        row["Téléphone"],
+        row["Niveau"],
+        row["Filière"],
+        row["Formation"],
+        row["Mode"],
+      ]);
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 10 + logoHeight + 35,
+        theme: "striped",
+        headStyles: {
+          fillColor: [21, 128, 61], // Vert entreprise
+          textColor: 255,
+          fontStyle: "bold",
+          fontSize: 9,
+        },
+        bodyStyles: {
+          fontSize: 8,
+          textColor: 50,
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245],
+        },
+        columnStyles: {
+          0: { cellWidth: 15, halign: "center" },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 30 },
+          4: { cellWidth: 25, halign: "center" },
+          5: { cellWidth: 35 },
+          6: { cellWidth: 40 },
+          7: { cellWidth: 25, halign: "center" },
+        },
+        margin: { top: 10 + logoHeight + 35, left: 14, right: 14 },
+      });
+
+      const fileName = `candidats_${new Date().toISOString().split("T")[0]}.pdf`;
+      doc.save(fileName);
+    };
+    
+    // Si l'image n'est pas chargée, exporter sans logo
+    img.onerror = () => {
+      // Titre sans logo
+      doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(21, 128, 61);
+      const titleWidth = doc.getTextWidth("Liste des candidats - Xam Xam Elite");
+      doc.text("Liste des candidats - Xam Xam Elite", (pageWidth - titleWidth) / 2, 15);
+      
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100);
+      const dateText = `Exporté le ${new Date().toLocaleDateString("fr-FR")}`;
+      const dateWidth = doc.getTextWidth(dateText);
+      doc.text(dateText, (pageWidth - dateWidth) / 2, 22);
+      
+      doc.setFontSize(10);
+      const statsText = `Total: ${filteredData.length} candidat(s)`;
+      const statsWidth = doc.getTextWidth(statsText);
+      doc.text(statsText, (pageWidth - statsWidth) / 2, 28);
+      
+      const exportData = prepareExportData();
+      const tableColumn = ["#", "Candidat", "Email", "Téléphone", "Niveau", "Filière", "Formation", "Mode"];
+      const tableRows = exportData.map(row => [
+        row["#"],
+        row["Candidat"],
+        row["Email"],
+        row["Téléphone"],
+        row["Niveau"],
+        row["Filière"],
+        row["Formation"],
+        row["Mode"],
+      ]);
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 35,
+        theme: "striped",
+        headStyles: {
+          fillColor: [21, 128, 61],
+          textColor: 255,
+          fontStyle: "bold",
+          fontSize: 9,
+        },
+        bodyStyles: {
+          fontSize: 8,
+          textColor: 50,
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245],
+        },
+        columnStyles: {
+          0: { cellWidth: 15, halign: "center" },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 50 },
+          3: { cellWidth: 30 },
+          4: { cellWidth: 25, halign: "center" },
+          5: { cellWidth: 35 },
+          6: { cellWidth: 40 },
+          7: { cellWidth: 25, halign: "center" },
+        },
+        margin: { top: 35, left: 14, right: 14 },
+      });
+
+      const fileName = `candidats_${new Date().toISOString().split("T")[0]}.pdf`;
+      doc.save(fileName);
+    };
+    
+    setShowExportMenu(false);
+  };
+
   return (
     <Card className="fade-0" style={{ overflow: "hidden" }}>
       {/* Header avec titre */}
@@ -111,6 +336,7 @@ export function TableView({ data, allFormations, theme }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          position: "relative",
         }}
       >
         <div>
@@ -134,31 +360,169 @@ export function TableView({ data, allFormations, theme }) {
             Gérez et consultez tous les candidats inscrits
           </p>
         </div>
-        <button
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "10px 16px",
-            borderRadius: 8,
-            background: theme.primary,
-            border: "none",
-            color: "#fff",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-            transition: "opacity 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.opacity = "0.9";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.opacity = "1";
-          }}
-        >
-          <Download size={16} strokeWidth={2.5} />
-          Exporter
-        </button>
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 16px",
+              borderRadius: 8,
+              background: theme.primary,
+              border: "none",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.opacity = "0.9";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.opacity = "1";
+            }}
+          >
+            <Download size={16} strokeWidth={2.5} />
+            Exporter
+          </button>
+
+          {/* Menu d'export */}
+          {showExportMenu && (
+            <>
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 1000,
+                }}
+                onClick={() => setShowExportMenu(false)}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  right: 0,
+                  marginTop: 8,
+                  minWidth: 200,
+                  background: theme.bgCard,
+                  border: `1px solid ${theme.border}`,
+                  borderRadius: 8,
+                  boxShadow: theme.shadowLg,
+                  zIndex: 1001,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    padding: "8px 12px",
+                    borderBottom: `1px solid ${theme.border}`,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: theme.textMuted,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  Format d'export
+                </div>
+                <button
+                  onClick={exportToExcel}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "12px 16px",
+                    border: "none",
+                    background: "transparent",
+                    color: theme.text,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    transition: "background 0.2s",
+                    textAlign: "left",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = theme.bgHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "transparent";
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 6,
+                      background: "#1D6F42",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FileSpreadsheet size={18} color="#fff" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600 }}>Excel</div>
+                    <div style={{ fontSize: 11, color: theme.textMuted }}>
+                      Format .xlsx
+                    </div>
+                  </div>
+                </button>
+                <button
+                  onClick={exportToPDF}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "12px 16px",
+                    border: "none",
+                    background: "transparent",
+                    color: theme.text,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    transition: "background 0.2s",
+                    textAlign: "left",
+                    borderTop: `1px solid ${theme.border}`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = theme.bgHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "transparent";
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 6,
+                      background: "#DC2626",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FileText size={18} color="#fff" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 600 }}>PDF</div>
+                    <div style={{ fontSize: 11, color: theme.textMuted }}>
+                      Format .pdf
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Filters Bar */}
