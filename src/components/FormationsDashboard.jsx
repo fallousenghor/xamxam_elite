@@ -67,9 +67,10 @@ export default function FormationsDashboard() {
         {/* Main Content */}
         <div
           style={{
-            marginLeft: 260,
+            marginLeft: 280,
             flex: 1,
             minHeight: "100vh",
+            background: `linear-gradient(180deg, ${theme.bg} 0%, ${theme.bgCard} 100%)`,
           }}
         >
           {/* Topbar */}
@@ -94,7 +95,7 @@ export default function FormationsDashboard() {
           )}
 
           {/* Content */}
-          <div style={{ padding: 32 }}>
+          <div style={{ padding: "32px 40px" }}>
             {activeTab === "dashboard" && (
               <DashboardView
                 theme={theme}

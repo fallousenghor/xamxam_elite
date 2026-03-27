@@ -11,6 +11,8 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Users,
+  Download,
 } from "lucide-react";
 import { Card } from "../ui/Card";
 import { SHEET_KEYS } from "../../config/constants";
@@ -100,7 +102,67 @@ export function TableView({ data, allFormations, theme }) {
   ];
 
   return (
-    <Card className="fade-0">
+    <Card className="fade-0" style={{ overflow: "hidden" }}>
+      {/* Header avec titre */}
+      <div
+        style={{
+          padding: "24px 28px",
+          borderBottom: `1px solid ${theme.border}`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: `linear-gradient(180deg, ${theme.bgHover} 0%, transparent 100%)`,
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: theme.text,
+              marginBottom: 4,
+            }}
+          >
+            Liste des candidats
+          </h2>
+          <p
+            style={{
+              fontSize: 13,
+              color: theme.textMuted,
+              fontWeight: 500,
+            }}
+          >
+            Gérez et consultez tous les candidats inscrits
+          </p>
+        </div>
+        <button
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "12px 20px",
+            borderRadius: 12,
+            background: theme.gradientPrimary,
+            border: "none",
+            color: "#fff",
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+            boxShadow: "0 4px 16px rgba(99,102,241,0.3)",
+            transition: "transform 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "scale(1.02)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "scale(1)";
+          }}
+        >
+          <Download size={18} strokeWidth={2.5} />
+          Exporter
+        </button>
+      </div>
+
       {/* Filters Bar */}
       <div
         style={{
@@ -110,60 +172,97 @@ export function TableView({ data, allFormations, theme }) {
           gap: 16,
           flexWrap: "wrap",
           alignItems: "center",
+          background: theme.bgCard,
         }}
       >
-        <div style={{ position: "relative", flex: "0 0 300px" }}>
-          <Search
-            size={18}
-            color={theme.textMuted}
+        {/* Search Input */}
+        <div style={{ position: "relative", flex: "0 0 320px" }}>
+          <div
             style={{
               position: "absolute",
-              left: 14,
+              left: 16,
               top: "50%",
               transform: "translateY(-50%)",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
             }}
-          />
+          >
+            <Search
+              size={18}
+              color={theme.textMuted}
+            />
+            <span
+              style={{
+                fontSize: 12,
+                color: theme.textMuted,
+                fontWeight: 500,
+              }}
+            >
+              Rechercher
+            </span>
+          </div>
           <input
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Rechercher un candidat..."
+            placeholder="Nom, email, filière..."
             style={{
               width: "100%",
-              padding: "11px 14px 11px 44px",
+              padding: "12px 16px 12px 110px",
               border: `1.5px solid ${theme.border}`,
-              borderRadius: 10,
+              borderRadius: 12,
               background: theme.bg,
               color: theme.text,
               fontSize: 14,
+              fontWeight: 500,
               outline: "none",
-              transition: "border-color 0.2s",
+              transition: "all 0.2s",
             }}
-            onFocus={(e) => (e.target.style.borderColor = theme.primary)}
-            onBlur={(e) => (e.target.style.borderColor = theme.border)}
+            onFocus={(e) => {
+              e.target.style.borderColor = theme.primary;
+              e.target.style.boxShadow = `0 0 0 4px ${theme.primaryGlow}`;
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = theme.border;
+              e.target.style.boxShadow = "none";
+            }}
           />
         </div>
 
+        {/* Filter Chips */}
         <div
           style={{
             display: "flex",
             gap: 8,
             flexWrap: "wrap",
             flex: 1,
+            alignItems: "center",
           }}
         >
           <div
             style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: theme.textMuted,
               display: "flex",
               alignItems: "center",
+              gap: 8,
+              padding: "8px 14px",
+              borderRadius: 20,
+              background: theme.bgHover,
+              border: `1px solid ${theme.border}`,
             }}
           >
-            <Filter size={14} style={{ marginRight: 6 }} /> Formation:
+            <Filter size={14} color={theme.textMuted} />
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: theme.textMuted,
+              }}
+            >
+              Formation:
+            </span>
           </div>
           {allFormations.map((f) => (
             <button
@@ -173,18 +272,30 @@ export function TableView({ data, allFormations, theme }) {
                 setCurrentPage(1);
               }}
               style={{
-                padding: "6px 14px",
-                border: `1px solid ${
+                padding: "8px 16px",
+                border: `1.5px solid ${
                   filterFormation === f ? theme.primary : theme.border
                 }`,
                 borderRadius: 20,
                 background:
-                  filterFormation === f ? theme.primaryGlow : "transparent",
-                color: filterFormation === f ? theme.primary : theme.textMuted,
+                  filterFormation === f ? theme.primaryGlow : theme.bgHover,
+                color: filterFormation === f ? theme.primary : theme.textSub,
                 fontSize: 13,
-                fontWeight: 500,
+                fontWeight: filterFormation === f ? 600 : 500,
                 cursor: "pointer",
                 transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                if (filterFormation !== f) {
+                  e.target.style.borderColor = theme.primary;
+                  e.target.style.background = theme.primaryGlow;
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (filterFormation !== f) {
+                  e.target.style.borderColor = theme.border;
+                  e.target.style.background = theme.bgHover;
+                }
               }}
             >
               {f}
@@ -192,16 +303,37 @@ export function TableView({ data, allFormations, theme }) {
           ))}
         </div>
 
+        {/* Result Count Badge */}
         <div
           style={{
-            marginLeft: "auto",
-            fontSize: 13,
-            fontWeight: 600,
-            color: theme.textSub,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "10px 18px",
+            borderRadius: 24,
+            background: `${theme.primary}15`,
+            border: `1.5px solid ${theme.primary}`,
           }}
         >
-          <span style={{ color: theme.primary }}>{filteredData.length}</span>{" "}
-          résultat{filteredData.length > 1 ? "s" : ""}
+          <Users size={16} color={theme.primary} strokeWidth={2.5} />
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              color: theme.primary,
+            }}
+          >
+            {filteredData.length}
+          </span>
+          <span
+            style={{
+              fontSize: 13,
+              fontWeight: 500,
+              color: theme.textSub,
+            }}
+          >
+            résultat{filteredData.length > 1 ? "s" : ""}
+          </span>
         </div>
       </div>
 
@@ -215,14 +347,14 @@ export function TableView({ data, allFormations, theme }) {
                   <th
                     key={col}
                     style={{
-                      padding: "14px 20px",
+                      padding: "16px 20px",
                       textAlign: "left",
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: 700,
                       color: theme.textMuted,
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      borderBottom: `1px solid ${theme.border}`,
+                      letterSpacing: "0.08em",
+                      borderBottom: `2px solid ${theme.border}`,
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -243,50 +375,60 @@ export function TableView({ data, allFormations, theme }) {
                   key={i}
                   style={{
                     borderBottom: `1px solid ${theme.border}`,
-                    background:
-                      i % 2 === 0 ? "transparent" : `${theme.border}22`,
-                    transition: "background 0.15s",
+                    background: "transparent",
+                    transition: "all 0.2s",
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = theme.bgHover)
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background =
-                      i % 2 === 0 ? "transparent" : `${theme.border}22`)
-                  }
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = theme.bgHover;
+                    e.currentTarget.style.transform = "scale(1.005)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
                 >
                   <td
                     style={{
-                      padding: "16px 20px",
+                      padding: "18px 20px",
                       fontSize: 13,
                       color: theme.textMuted,
                       fontWeight: 600,
                     }}
                   >
-                    #{String(globalIndex + 1).padStart(2, "0")}
+                    <span
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: 8,
+                        background: theme.bgHover,
+                        border: `1px solid ${theme.border}`,
+                      }}
+                    >
+                      #{String(globalIndex + 1).padStart(3, "0")}
+                    </span>
                   </td>
 
-                  <td style={{ padding: "16px 20px" }}>
+                  <td style={{ padding: "18px 20px" }}>
                     <div
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 12,
+                        gap: 14,
                       }}
                     >
                       <div
                         style={{
-                          width: 40,
-                          height: 40,
+                          width: 44,
+                          height: 44,
                           borderRadius: "50%",
-                          background: `linear-gradient(135deg, ${avatarColor}, ${avatarColor}88)`,
+                          background: `linear-gradient(135deg, ${avatarColor}, ${avatarColor}CC)`,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: 700,
                           color: "#fff",
                           flexShrink: 0,
+                          boxShadow: `0 4px 12px ${avatarColor}50`,
                         }}
                       >
                         {(r[SHEET_KEYS.nom] || "?")[0]}
@@ -295,9 +437,9 @@ export function TableView({ data, allFormations, theme }) {
                         <div
                           style={{
                             fontSize: 14,
-                            fontWeight: 600,
+                            fontWeight: 700,
                             color: theme.text,
-                            marginBottom: 2,
+                            marginBottom: 3,
                           }}
                         >
                           {r[SHEET_KEYS.nom]}
@@ -306,29 +448,31 @@ export function TableView({ data, allFormations, theme }) {
                           style={{
                             fontSize: 12,
                             color: theme.textMuted,
+                            fontWeight: 500,
                           }}
                         >
-                          {r[SHEET_KEYS.naissance]}
+                          Né(e) le {r[SHEET_KEYS.naissance]}
                         </div>
                       </div>
                     </div>
                   </td>
 
-                  <td style={{ padding: "16px 20px" }}>
+                  <td style={{ padding: "18px 20px" }}>
                     <div
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 4,
+                        gap: 6,
                       }}
                     >
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 6,
+                          gap: 8,
                           fontSize: 13,
                           color: theme.textSub,
+                          fontWeight: 500,
                         }}
                       >
                         <Mail size={14} />
@@ -338,9 +482,10 @@ export function TableView({ data, allFormations, theme }) {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 6,
+                          gap: 8,
                           fontSize: 13,
                           color: theme.textMuted,
+                          fontWeight: 500,
                         }}
                       >
                         <Phone size={14} />
@@ -349,17 +494,17 @@ export function TableView({ data, allFormations, theme }) {
                     </div>
                   </td>
 
-                  <td style={{ padding: "16px 20px" }}>
+                  <td style={{ padding: "18px 20px" }}>
                     <div
                       style={{
-                        display: "inline-block",
-                        padding: "5px 12px",
-                        borderRadius: 6,
+                        display: "inline-flex",
+                        padding: "6px 14px",
+                        borderRadius: 8,
                         background: theme.primaryGlow,
-                        border: `1px solid ${theme.primary}`,
+                        border: `1.5px solid ${theme.primary}`,
                         color: theme.primary,
                         fontSize: 12,
-                        fontWeight: 600,
+                        fontWeight: 700,
                       }}
                     >
                       {r._niveau || r[SHEET_KEYS.niveau] || "N/A"}
@@ -368,9 +513,10 @@ export function TableView({ data, allFormations, theme }) {
 
                   <td
                     style={{
-                      padding: "16px 20px",
+                      padding: "18px 20px",
                       fontSize: 13,
                       color: theme.textSub,
+                      fontWeight: 500,
                     }}
                   >
                     {r[SHEET_KEYS.filiere]}
@@ -378,38 +524,38 @@ export function TableView({ data, allFormations, theme }) {
 
                   <td
                     style={{
-                      padding: "16px 20px",
+                      padding: "18px 20px",
                       fontSize: 13,
-                      fontWeight: 600,
+                      fontWeight: 700,
                       color: avatarColor,
                     }}
                   >
                     {r._formation}
                   </td>
 
-                  <td style={{ padding: "16px 20px" }}>
+                  <td style={{ padding: "18px 20px" }}>
                     <div
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
-                        gap: 6,
-                        padding: "5px 12px",
-                        borderRadius: 6,
+                        gap: 8,
+                        padding: "6px 14px",
+                        borderRadius: 8,
                         background: isOnline
                           ? `${theme.success}18`
                           : `${theme.warning}18`,
-                        border: `1px solid ${
+                        border: `1.5px solid ${
                           isOnline ? theme.success : theme.warning
                         }`,
                         color: isOnline ? theme.success : theme.warning,
                         fontSize: 12,
-                        fontWeight: 600,
+                        fontWeight: 700,
                       }}
                     >
                       {isOnline ? (
-                        <Monitor size={14} />
+                        <Monitor size={14} strokeWidth={2.5} />
                       ) : (
-                        <Building2 size={14} />
+                        <Building2 size={14} strokeWidth={2.5} />
                       )}
                       {r._mode}
                     </div>
@@ -424,18 +570,41 @@ export function TableView({ data, allFormations, theme }) {
           <div
             style={{
               textAlign: "center",
-              padding: "60px 0",
+              padding: "80px 0",
               color: theme.textMuted,
             }}
           >
-            <Search size={48} style={{ marginBottom: 16, opacity: 0.3 }} />
             <div
               style={{
-                fontSize: 16,
-                fontWeight: 600,
+                width: 80,
+                height: 80,
+                borderRadius: "50%",
+                background: theme.bgHover,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 20px",
+              }}
+            >
+              <Search size={36} style={{ opacity: 0.4 }} />
+            </div>
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: theme.text,
+                marginBottom: 6,
               }}
             >
               Aucun résultat trouvé
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                color: theme.textMuted,
+              }}
+            >
+              Essayez de modifier vos filtres de recherche
             </div>
           </div>
         )}
@@ -445,13 +614,14 @@ export function TableView({ data, allFormations, theme }) {
       {filteredData.length > 0 && (
         <div
           style={{
-            padding: "16px 28px",
-            borderTop: `1px solid ${theme.border}`,
+            padding: "20px 28px",
+            borderTop: `2px solid ${theme.border}`,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
             gap: 16,
+            background: `linear-gradient(180deg, transparent 0%, ${theme.bgHover} 100%)`,
           }}
         >
           {/* Informations */}
@@ -459,22 +629,22 @@ export function TableView({ data, allFormations, theme }) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 16,
+              gap: 20,
               fontSize: 13,
               color: theme.textMuted,
             }}
           >
             <div>
               Affichage de{" "}
-              <span style={{ color: theme.primary, fontWeight: 600 }}>
+              <span style={{ color: theme.primary, fontWeight: 700 }}>
                 {startIndex + 1}
               </span>{" "}
               à{" "}
-              <span style={{ color: theme.primary, fontWeight: 600 }}>
+              <span style={{ color: theme.primary, fontWeight: 700 }}>
                 {Math.min(endIndex, filteredData.length)}
               </span>{" "}
               sur{" "}
-              <span style={{ color: theme.primary, fontWeight: 600 }}>
+              <span style={{ color: theme.primary, fontWeight: 700 }}>
                 {filteredData.length}
               </span>{" "}
               candidats
@@ -483,14 +653,20 @@ export function TableView({ data, allFormations, theme }) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 6,
+                gap: 8,
+                padding: "8px 14px",
+                borderRadius: 10,
+                background: theme.bg,
+                border: `1px solid ${theme.border}`,
               }}
             >
-              <Clock size={14} />
-              {new Date().toLocaleTimeString("fr-FR", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              <Clock size={14} color={theme.textMuted} />
+              <span style={{ fontWeight: 600 }}>
+                {new Date().toLocaleTimeString("fr-FR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
           </div>
 
@@ -507,12 +683,13 @@ export function TableView({ data, allFormations, theme }) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
+                gap: 10,
                 fontSize: 13,
                 color: theme.textSub,
+                marginRight: 12,
               }}
             >
-              <span>Afficher :</span>
+              <span style={{ fontWeight: 500 }}>Afficher :</span>
               <select
                 value={itemsPerPage}
                 onChange={(e) => {
@@ -520,15 +697,22 @@ export function TableView({ data, allFormations, theme }) {
                   setCurrentPage(1);
                 }}
                 style={{
-                  padding: "6px 12px",
-                  borderRadius: 6,
-                  border: `1px solid ${theme.border}`,
+                  padding: "8px 14px",
+                  borderRadius: 10,
+                  border: `1.5px solid ${theme.border}`,
                   background: theme.bg,
                   color: theme.text,
                   fontSize: 13,
-                  fontWeight: 500,
+                  fontWeight: 600,
                   cursor: "pointer",
                   outline: "none",
+                  transition: "all 0.2s",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = theme.primary;
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = theme.border;
                 }}
               >
                 {ITEMS_PER_PAGE_OPTIONS.map((option) => (
@@ -537,7 +721,7 @@ export function TableView({ data, allFormations, theme }) {
                   </option>
                 ))}
               </select>
-              <span>par page</span>
+              <span style={{ fontWeight: 500 }}>par page</span>
             </div>
 
             {/* Boutons de navigation */}
@@ -545,8 +729,7 @@ export function TableView({ data, allFormations, theme }) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 4,
-                marginLeft: 16,
+                gap: 6,
               }}
             >
               {/* Première page */}
@@ -554,23 +737,34 @@ export function TableView({ data, allFormations, theme }) {
                 onClick={handleFirstPage}
                 disabled={currentPage === 1}
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: 36,
+                  height: 36,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  border: `1px solid ${theme.border}`,
-                  borderRadius: 6,
-                  background:
-                    currentPage === 1 ? theme.bg : theme.bgHover,
-                  color:
-                    currentPage === 1 ? theme.textMuted : theme.text,
+                  border: `1.5px solid ${theme.border}`,
+                  borderRadius: 10,
+                  background: currentPage === 1 ? theme.bg : theme.bgHover,
+                  color: currentPage === 1 ? theme.textMuted : theme.text,
                   cursor: currentPage === 1 ? "not-allowed" : "pointer",
                   opacity: currentPage === 1 ? 0.5 : 1,
                   transition: "all 0.2s",
+                  fontWeight: 600,
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== 1) {
+                    e.target.style.borderColor = theme.primary;
+                    e.target.style.background = theme.primaryGlow;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== 1) {
+                    e.target.style.borderColor = theme.border;
+                    e.target.style.background = theme.bgHover;
+                  }
                 }}
               >
-                <ChevronsLeft size={16} />
+                <ChevronsLeft size={18} />
               </button>
 
               {/* Page précédente */}
@@ -578,23 +772,34 @@ export function TableView({ data, allFormations, theme }) {
                 onClick={handlePreviousPage}
                 disabled={currentPage === 1}
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: 36,
+                  height: 36,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  border: `1px solid ${theme.border}`,
-                  borderRadius: 6,
-                  background:
-                    currentPage === 1 ? theme.bg : theme.bgHover,
-                  color:
-                    currentPage === 1 ? theme.textMuted : theme.text,
+                  border: `1.5px solid ${theme.border}`,
+                  borderRadius: 10,
+                  background: currentPage === 1 ? theme.bg : theme.bgHover,
+                  color: currentPage === 1 ? theme.textMuted : theme.text,
                   cursor: currentPage === 1 ? "not-allowed" : "pointer",
                   opacity: currentPage === 1 ? 0.5 : 1,
                   transition: "all 0.2s",
+                  fontWeight: 600,
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== 1) {
+                    e.target.style.borderColor = theme.primary;
+                    e.target.style.background = theme.primaryGlow;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== 1) {
+                    e.target.style.borderColor = theme.border;
+                    e.target.style.background = theme.bgHover;
+                  }
                 }}
               >
-                <ChevronLeft size={16} />
+                <ChevronLeft size={18} />
               </button>
 
               {/* Numéros de page */}
@@ -603,24 +808,37 @@ export function TableView({ data, allFormations, theme }) {
                   key={page}
                   onClick={() => handlePageChange(page)}
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 36,
+                    height: 36,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    border: `1px solid ${
+                    border: `1.5px solid ${
                       currentPage === page ? theme.primary : theme.border
                     }`,
-                    borderRadius: 6,
+                    borderRadius: 10,
                     background:
                       currentPage === page
-                        ? theme.primaryGlow
+                        ? theme.gradientPrimary
                         : theme.bg,
                     color:
-                      currentPage === page ? theme.primary : theme.text,
-                    fontWeight: currentPage === page ? 600 : 500,
+                      currentPage === page ? "#fff" : theme.text,
+                    fontWeight: 700,
                     cursor: "pointer",
                     transition: "all 0.2s",
+                    boxShadow: currentPage === page ? `0 4px 12px ${theme.primary}40` : "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (currentPage !== page) {
+                      e.target.style.borderColor = theme.primary;
+                      e.target.style.background = theme.primaryGlow;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentPage !== page) {
+                      e.target.style.borderColor = theme.border;
+                      e.target.style.background = theme.bg;
+                    }
                   }}
                 >
                   {page}
@@ -632,23 +850,34 @@ export function TableView({ data, allFormations, theme }) {
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: 36,
+                  height: 36,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  border: `1px solid ${theme.border}`,
-                  borderRadius: 6,
-                  background:
-                    currentPage === totalPages ? theme.bg : theme.bgHover,
-                  color:
-                    currentPage === totalPages ? theme.textMuted : theme.text,
+                  border: `1.5px solid ${theme.border}`,
+                  borderRadius: 10,
+                  background: currentPage === totalPages ? theme.bg : theme.bgHover,
+                  color: currentPage === totalPages ? theme.textMuted : theme.text,
                   cursor: currentPage === totalPages ? "not-allowed" : "pointer",
                   opacity: currentPage === totalPages ? 0.5 : 1,
                   transition: "all 0.2s",
+                  fontWeight: 600,
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.target.style.borderColor = theme.primary;
+                    e.target.style.background = theme.primaryGlow;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.target.style.borderColor = theme.border;
+                    e.target.style.background = theme.bgHover;
+                  }
                 }}
               >
-                <ChevronRight size={16} />
+                <ChevronRight size={18} />
               </button>
 
               {/* Dernière page */}
@@ -656,23 +885,34 @@ export function TableView({ data, allFormations, theme }) {
                 onClick={handleLastPage}
                 disabled={currentPage === totalPages}
                 style={{
-                  width: 32,
-                  height: 32,
+                  width: 36,
+                  height: 36,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  border: `1px solid ${theme.border}`,
-                  borderRadius: 6,
-                  background:
-                    currentPage === totalPages ? theme.bg : theme.bgHover,
-                  color:
-                    currentPage === totalPages ? theme.textMuted : theme.text,
+                  border: `1.5px solid ${theme.border}`,
+                  borderRadius: 10,
+                  background: currentPage === totalPages ? theme.bg : theme.bgHover,
+                  color: currentPage === totalPages ? theme.textMuted : theme.text,
                   cursor: currentPage === totalPages ? "not-allowed" : "pointer",
                   opacity: currentPage === totalPages ? 0.5 : 1,
                   transition: "all 0.2s",
+                  fontWeight: 600,
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.target.style.borderColor = theme.primary;
+                    e.target.style.background = theme.primaryGlow;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.target.style.borderColor = theme.border;
+                    e.target.style.background = theme.bgHover;
+                  }
                 }}
               >
-                <ChevronsRight size={16} />
+                <ChevronsRight size={18} />
               </button>
             </div>
           </div>

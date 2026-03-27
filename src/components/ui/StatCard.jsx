@@ -1,4 +1,4 @@
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { Card } from "./Card";
 
 /**
@@ -12,15 +12,19 @@ export function StatCard({
   color,
   delay = 0,
 }) {
+  const isPositive = change >= 0;
+
   return (
     <Card
       className={`fade-${delay}`}
       style={{
-        padding: "24px",
+        padding: 0,
         position: "relative",
         cursor: "default",
+        background: `linear-gradient(135deg, ${color}08 0%, transparent 100%)`,
       }}
     >
+      {/* Gradient top bar */}
       <div
         style={{
           position: "absolute",
@@ -28,65 +32,123 @@ export function StatCard({
           left: 0,
           right: 0,
           height: 4,
-          background: `linear-gradient(90deg, ${color}, ${color}88)`,
+          background: `linear-gradient(90deg, ${color}, ${color}CC, ${color}88)`,
+          boxShadow: `0 2px 12px ${color}60`,
         }}
       />
+
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: 16,
+          padding: "28px",
         }}
       >
         <div
           style={{
-            width: 48,
-            height: 48,
-            borderRadius: 12,
-            background: `${color}18`,
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: 20,
           }}
         >
-          <Icon size={24} color={color} strokeWidth={2.5} />
-        </div>
-        {change && (
+          {/* Icon with gradient background */}
           <div
             style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: change > 0 ? "var(--success)" : "var(--danger)",
+              width: 56,
+              height: 56,
+              borderRadius: 16,
+              background: `linear-gradient(135deg, ${color}20, ${color}10)`,
               display: "flex",
               alignItems: "center",
-              gap: 4,
+              justifyContent: "center",
+              position: "relative",
+              overflow: "hidden",
             }}
           >
-            <TrendingUp size={14} />
-            {Math.abs(change)}%
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: `linear-gradient(135deg, ${color}15, transparent)`,
+              }}
+            />
+            <Icon size={26} color={color} strokeWidth={2.5} style={{ position: "relative", zIndex: 1 }} />
           </div>
-        )}
-      </div>
-      <div
-        style={{
-          fontSize: 32,
-          fontWeight: 800,
-          color: "var(--text)",
-          marginBottom: 4,
-          letterSpacing: "-0.02em",
-        }}
-      >
-        {value}
-      </div>
-      <div
-        style={{
-          fontSize: 14,
-          fontWeight: 500,
-          color: "var(--text-sub)",
-        }}
-      >
-        {label}
+
+          {/* Change indicator */}
+          {change && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "6px 12px",
+                borderRadius: 20,
+                background: isPositive
+                  ? `${color}15`
+                  : "rgba(239,68,68,0.15)",
+                border: `1px solid ${
+                  isPositive ? color : "rgba(239,68,68,0.3)"
+                }`,
+              }}
+            >
+              {isPositive ? (
+                <ArrowUpRight size={16} color={color} strokeWidth={2.5} />
+              ) : (
+                <ArrowDownRight size={16} color="#EF4444" strokeWidth={2.5} />
+              )}
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: isPositive ? color : "#EF4444",
+                }}
+              >
+                {Math.abs(change)}%
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Value */}
+        <div
+          style={{
+            fontSize: 36,
+            fontWeight: 800,
+            color: "var(--text)",
+            marginBottom: 6,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.1,
+          }}
+        >
+          {value}
+        </div>
+
+        {/* Label */}
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 500,
+            color: "var(--text-sub)",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          {label}
+        </div>
+
+        {/* Decorative gradient */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            width: 120,
+            height: 120,
+            background: `radial-gradient(circle at center, ${color}10 0%, transparent 70%)`,
+            pointerEvents: "none",
+          }}
+        />
       </div>
     </Card>
   );
