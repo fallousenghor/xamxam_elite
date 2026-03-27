@@ -48,7 +48,7 @@ export function DashboardView({
         <StatCard
           icon={Building2}
           label="Présentiel"
-          value={stats.physique}
+          value={stats.presentiel}
           change={-5}
           color={theme.warning}
           delay={2}
