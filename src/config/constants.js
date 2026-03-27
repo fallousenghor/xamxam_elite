@@ -1,9 +1,10 @@
 /**
  * Configuration Google Sheets
+ * Les variables sensibles sont chargées depuis les variables d'environnement
  */
 export const SHEET_CONFIG = {
-  SHEET_ID: "1ddbFAYQZfoZxoXsFb8zBun_jqdoyVRU1Sqino-d26HI",
-  API_KEY: "AIzaSyCFFjXwy5MVYE561EA8t6K3qCNAhYEoKnU",
+  SHEET_ID: import.meta.env.VITE_GOOGLE_SHEET_ID,
+  API_KEY: import.meta.env.VITE_GOOGLE_API_KEY,
   RANGE: "Form Responses 1",
 };
 
