@@ -67,10 +67,10 @@ export default function FormationsDashboard() {
         {/* Main Content */}
         <div
           style={{
-            marginLeft: 280,
+            marginLeft: 260,
             flex: 1,
             minHeight: "100vh",
-            background: `linear-gradient(180deg, ${theme.bg} 0%, ${theme.bgCard} 100%)`,
+            background: theme.bg,
           }}
         >
           {/* Topbar */}

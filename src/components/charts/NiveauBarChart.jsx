@@ -12,51 +12,54 @@ import { ChartTooltip } from "../ui/ChartTooltip";
 
 /**
  * Composant NiveauDonutChart - Graphique en anneau des niveaux d'études
+ * Design simple et professionnel
+ * Utilise les couleurs de l'entreprise : Vert, Gold, Bleu
  */
 export function NiveauDonutChart({ data, theme }) {
+  // Couleurs variées pour les niveaux
   const chartColors = [
-    theme.chart1,
-    theme.chart2,
-    theme.chart3,
-    theme.chart4,
-    theme.chart5,
+    theme.primary,   // Vert sombre
+    theme.gold,      // Gold
+    theme.blue,      // Bleu
+    theme.chart4,    // Vert moyen
+    theme.chart5,    // Bleu foncé
   ];
 
   return (
     <Card className="fade-5" style={{ minHeight: 320 }}>
-      <div style={{ padding: "24px 28px" }}>
+      <div style={{ padding: "20px 24px" }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 20,
+            marginBottom: 16,
           }}
         >
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 12,
+              gap: 10,
             }}
           >
             <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                background: `${theme.cyan}15`,
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                background: theme.gold,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <BookOpen size={20} color={theme.cyan} strokeWidth={2.5} />
+              <BookOpen size={18} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
               <h3
                 style={{
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: 700,
                   color: theme.text,
                   marginBottom: 2,
@@ -66,7 +69,7 @@ export function NiveauDonutChart({ data, theme }) {
               </h3>
               <p
                 style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: theme.textMuted,
                   fontWeight: 500,
                 }}
@@ -92,20 +95,17 @@ export function NiveauDonutChart({ data, theme }) {
                 <Cell
                   key={i}
                   fill={chartColors[i % chartColors.length]}
-                  style={{
-                    filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.2))",
-                  }}
                 />
               ))}
             </Pie>
             <Tooltip content={<ChartTooltip />} />
             <Legend
               formatter={(v) => (
-                <span style={{ color: theme.textSub, fontSize: 13, fontWeight: 500 }}>
+                <span style={{ color: theme.textSub, fontSize: 12, fontWeight: 500 }}>
                   {v}
                 </span>
               )}
-              wrapperStyle={{ paddingTop: 16 }}
+              wrapperStyle={{ paddingTop: 12 }}
             />
           </PieChart>
         </ResponsiveContainer>

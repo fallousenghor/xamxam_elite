@@ -3,51 +3,54 @@ import { Card } from "../ui/Card";
 
 /**
  * Composant FiliereProgressList - Liste des top filières avec barres de progression
+ * Design simple et professionnel
+ * Utilise les couleurs de l'entreprise : Vert, Gold, Bleu
  */
 export function FiliereProgressList({ data, total, theme }) {
+  // Couleurs variées pour les filières
   const chartColors = [
-    theme.chart1,
-    theme.chart2,
-    theme.chart3,
-    theme.chart4,
-    theme.chart5,
+    theme.primary,   // Vert sombre
+    theme.gold,      // Gold
+    theme.blue,      // Bleu
+    theme.chart4,    // Vert moyen
+    theme.chart5,    // Bleu foncé
   ];
 
   return (
     <Card className="fade-5" style={{ minHeight: 320 }}>
-      <div style={{ padding: "24px 28px" }}>
+      <div style={{ padding: "20px 24px" }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 24,
+            marginBottom: 20,
           }}
         >
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 12,
+              gap: 10,
             }}
           >
             <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                background: `${theme.success}15`,
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                background: theme.success,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <TrendingUp size={20} color={theme.success} strokeWidth={2.5} />
+              <TrendingUp size={18} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
               <h3
                 style={{
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: 700,
                   color: theme.text,
                   marginBottom: 2,
@@ -57,7 +60,7 @@ export function FiliereProgressList({ data, total, theme }) {
               </h3>
               <p
                 style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: theme.textMuted,
                   fontWeight: 500,
                 }}
@@ -71,7 +74,7 @@ export function FiliereProgressList({ data, total, theme }) {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: 20,
+            gap: 18,
           }}
         >
           {data.map((item, i) => {
@@ -85,12 +88,12 @@ export function FiliereProgressList({ data, total, theme }) {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom: 10,
+                    marginBottom: 8,
                   }}
                 >
                   <span
                     style={{
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: 600,
                       color: theme.textSub,
                     }}
@@ -101,12 +104,12 @@ export function FiliereProgressList({ data, total, theme }) {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 12,
+                      gap: 10,
                     }}
                   >
                     <span
                       style={{
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: 700,
                         color,
                       }}
@@ -115,11 +118,11 @@ export function FiliereProgressList({ data, total, theme }) {
                     </span>
                     <span
                       style={{
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: 700,
                         color: theme.textMuted,
-                        padding: "4px 10px",
-                        borderRadius: 6,
+                        padding: "3px 8px",
+                        borderRadius: 4,
                         background: `${color}15`,
                         border: `1px solid ${color}30`,
                       }}
@@ -130,35 +133,21 @@ export function FiliereProgressList({ data, total, theme }) {
                 </div>
                 <div
                   style={{
-                    height: 10,
+                    height: 8,
                     background: theme.border,
-                    borderRadius: 5,
+                    borderRadius: 4,
                     overflow: "hidden",
-                    position: "relative",
                   }}
                 >
                   <div
                     style={{
                       width: `${pct}%`,
                       height: "100%",
-                      background: `linear-gradient(90deg, ${color}CC, ${color})`,
-                      transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)",
-                      borderRadius: 5,
-                      position: "relative",
+                      background: color,
+                      transition: "width 0.8s ease",
+                      borderRadius: 4,
                     }}
-                  >
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: "linear-gradient(90deg, rgba(255,255,255,0.2) 0%, transparent 50%, rgba(255,255,255,0.1) 100%)",
-                        borderRadius: 5,
-                      }}
-                    />
-                  </div>
+                  />
                 </div>
               </div>
             );

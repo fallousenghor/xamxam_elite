@@ -1,70 +1,75 @@
 /**
- * Définition des thèmes (Dark / Light) - Design Professionnel Premium
+ * Définition des thèmes - Couleurs entreprise (Vert, Gold, Blanc, Bleu)
+ * Design simple et professionnel sans gradients
  */
 export const THEMES = {
   dark: {
-    bg: "#0A0E1A",
-    bgCard: "#111827",
-    bgSidebar: "#0D111C",
-    bgHover: "#1F2937",
-    border: "#1F2937",
-    borderLight: "#374151",
-    text: "#F9FAFB",
-    textSub: "#9CA3AF",
-    textMuted: "#6B7280",
-    primary: "#6366F1",
-    primaryGlow: "rgba(99,102,241,0.25)",
-    success: "#10B981",
-    warning: "#F59E0B",
+    bg: "#0D1115",
+    bgCard: "#151A1F",
+    bgSidebar: "#0F1418",
+    bgHover: "#1A2229",
+    border: "#2A323A",
+    borderLight: "#3A4450",
+    text: "#FFFFFF",
+    textSub: "#B0B8C0",
+    textMuted: "#6B7680",
+    // Couleurs entreprise
+    primary: "#15803D",    // Vert entreprise sombre
+    primarySolid: "#166534", // Vert plus foncé pour hover
+    gold: "#D4AF37",       // Gold entreprise
+    blue: "#2563EB",       // Bleu entreprise
+    success: "#15803D",
+    warning: "#D4AF37",
     danger: "#EF4444",
-    purple: "#A855F7",
-    cyan: "#06B6D4",
-    pink: "#EC4899",
-    chart1: "#6366F1",
-    chart2: "#10B981",
-    chart3: "#F59E0B",
-    chart4: "#A855F7",
-    chart5: "#06B6D4",
-    chart6: "#EC4899",
-    chart7: "#EF4444",
-    shadow: "0 8px 32px rgba(0,0,0,0.5)",
-    shadowSm: "0 4px 16px rgba(0,0,0,0.4)",
-    shadowLg: "0 20px 60px rgba(0,0,0,0.6)",
-    gradientPrimary: "linear-gradient(135deg, #6366F1 0%, #A855F7 100%)",
-    gradientSuccess: "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-    gradientCard: "linear-gradient(180deg, rgba(99,102,241,0.08) 0%, transparent 100%)",
+    // Couleurs pour charts (variées)
+    chart1: "#15803D",  // Vert sombre
+    chart2: "#D4AF37",  // Gold
+    chart3: "#2563EB",  // Bleu
+    chart4: "#16A34A",  // Vert moyen
+    chart5: "#1E40AF",  // Bleu foncé
+    chart6: "#B8960C",  // Gold foncé
+    chart7: "#EF4444",  // Rouge
+    shadow: "0 4px 20px rgba(0,0,0,0.4)",
+    shadowSm: "0 2px 8px rgba(0,0,0,0.3)",
+    shadowLg: "0 8px 32px rgba(0,0,0,0.5)",
+    // Suppression des gradients - couleurs solides
+    gradientPrimary: "#15803D",
+    gradientSuccess: "#15803D",
+    gradientCard: "#151A1F",
   },
   light: {
-    bg: "#F8FAFC",
+    bg: "#F8FAFB",
     bgCard: "#FFFFFF",
     bgSidebar: "#FFFFFF",
-    bgHover: "#F1F5F9",
-    border: "#E2E8F0",
-    borderLight: "#CBD5E1",
-    text: "#1E293B",
-    textSub: "#64748B",
-    textMuted: "#94A3B8",
-    primary: "#6366F1",
-    primaryGlow: "rgba(99,102,241,0.15)",
-    success: "#10B981",
-    warning: "#F59E0B",
+    bgHover: "#F2F5F7",
+    border: "#E0E5E8",
+    borderLight: "#CBD2D8",
+    text: "#1A1F24",
+    textSub: "#5A6570",
+    textMuted: "#889098",
+    // Couleurs entreprise
+    primary: "#15803D",    // Vert entreprise sombre
+    primarySolid: "#166534", // Vert plus foncé pour hover
+    gold: "#D4AF37",       // Gold entreprise
+    blue: "#2563EB",       // Bleu entreprise
+    success: "#15803D",
+    warning: "#D4AF37",
     danger: "#EF4444",
-    purple: "#A855F7",
-    cyan: "#06B6D4",
-    pink: "#EC4899",
-    chart1: "#6366F1",
-    chart2: "#10B981",
-    chart3: "#F59E0B",
-    chart4: "#A855F7",
-    chart5: "#06B6D4",
-    chart6: "#EC4899",
-    chart7: "#EF4444",
-    shadow: "0 8px 32px rgba(0,0,0,0.12)",
-    shadowSm: "0 4px 16px rgba(0,0,0,0.08)",
-    shadowLg: "0 20px 60px rgba(0,0,0,0.16)",
-    gradientPrimary: "linear-gradient(135deg, #6366F1 0%, #A855F7 100%)",
-    gradientSuccess: "linear-gradient(135deg, #10B981 0%, #34D399 100%)",
-    gradientCard: "linear-gradient(180deg, rgba(99,102,241,0.05) 0%, transparent 100%)",
+    // Couleurs pour charts (variées)
+    chart1: "#15803D",  // Vert sombre
+    chart2: "#D4AF37",  // Gold
+    chart3: "#2563EB",  // Bleu
+    chart4: "#16A34A",  // Vert moyen
+    chart5: "#1E40AF",  // Bleu foncé
+    chart6: "#B8960C",  // Gold foncé
+    chart7: "#EF4444",  // Rouge
+    shadow: "0 4px 20px rgba(0,0,0,0.08)",
+    shadowSm: "0 2px 8px rgba(0,0,0,0.05)",
+    shadowLg: "0 8px 32px rgba(0,0,0,0.1)",
+    // Suppression des gradients - couleurs solides
+    gradientPrimary: "#15803D",
+    gradientSuccess: "#15803D",
+    gradientCard: "#FFFFFF",
   },
 };
 

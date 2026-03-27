@@ -14,51 +14,54 @@ import { ChartTooltip } from "../ui/ChartTooltip";
 
 /**
  * Composant FormationBarChart - Graphique en barres verticales des formations demandées
+ * Design simple et professionnel
+ * Utilise les couleurs de l'entreprise : Vert, Gold, Bleu
  */
 export function FormationBarChart({ data, theme }) {
+  // Couleurs variées pour les formations
   const chartColors = [
-    theme.chart1,
-    theme.chart2,
-    theme.chart3,
-    theme.chart4,
-    theme.chart5,
+    theme.primary,   // Vert sombre
+    theme.gold,      // Gold
+    theme.blue,      // Bleu
+    theme.chart4,    // Vert moyen
+    theme.chart5,    // Bleu foncé
   ];
 
   return (
     <Card className="fade-4" style={{ minHeight: 340 }}>
-      <div style={{ padding: "24px 28px" }}>
+      <div style={{ padding: "20px 24px" }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 24,
+            marginBottom: 20,
           }}
         >
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 12,
+              gap: 10,
             }}
           >
             <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                background: `${theme.primary}15`,
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                background: theme.primary,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <BarChart3 size={20} color={theme.primary} strokeWidth={2.5} />
+              <BarChart3 size={18} color="#fff" strokeWidth={2.5} />
             </div>
             <div>
               <h3
                 style={{
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: 700,
                   color: theme.text,
                   marginBottom: 2,
@@ -68,7 +71,7 @@ export function FormationBarChart({ data, theme }) {
               </h3>
               <p
                 style={{
-                  fontSize: 12,
+                  fontSize: 11,
                   color: theme.textMuted,
                   fontWeight: 500,
                 }}
@@ -102,14 +105,11 @@ export function FormationBarChart({ data, theme }) {
               tickLine={false}
             />
             <Tooltip content={<ChartTooltip />} />
-            <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={40}>
+            <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={40}>
               {data.map((_, i) => (
                 <Cell
                   key={i}
                   fill={chartColors[i % chartColors.length]}
-                  style={{
-                    filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.15))",
-                  }}
                 />
               ))}
             </Bar>

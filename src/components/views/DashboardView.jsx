@@ -8,6 +8,7 @@ import { Card } from "../ui/Card";
 
 /**
  * Composant DashboardView - Vue d'ensemble avec statistiques et graphiques
+ * Design simple et professionnel
  */
 export function DashboardView({
   theme,
@@ -20,11 +21,11 @@ export function DashboardView({
   allFormations,
 }) {
   return (
-    <div style={{ animation: "fadeIn 0.5s ease both" }}>
+    <div style={{ animation: "fadeIn 0.4s ease both" }}>
       {/* Header avec titre de section */}
       <div
         style={{
-          marginBottom: 32,
+          marginBottom: 28,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -33,18 +34,17 @@ export function DashboardView({
         <div>
           <h2
             style={{
-              fontSize: 28,
-              fontWeight: 800,
+              fontSize: 24,
+              fontWeight: 700,
               color: theme.text,
-              marginBottom: 8,
-              letterSpacing: "-0.02em",
+              marginBottom: 6,
             }}
           >
             Tableau de bord
           </h2>
           <p
             style={{
-              fontSize: 14,
+              fontSize: 13,
               color: theme.textMuted,
               fontWeight: 500,
             }}
@@ -52,34 +52,27 @@ export function DashboardView({
             Statistiques en temps réel des inscriptions
           </p>
         </div>
-        <div
+        <Card
           style={{
+            padding: "10px 16px",
             display: "flex",
-            gap: 12,
+            alignItems: "center",
+            gap: 8,
+            background: theme.primary,
+            border: "none",
           }}
         >
-          <Card
+          <TrendingUp size={16} color="#fff" strokeWidth={2.5} />
+          <span
             style={{
-              padding: "12px 20px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              background: theme.gradientPrimary,
-              border: "none",
+              fontSize: 12,
+              fontWeight: 600,
+              color: "#fff",
             }}
           >
-            <TrendingUp size={18} color="#fff" strokeWidth={2.5} />
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#fff",
-              }}
-            >
-              +12% cette semaine
-            </span>
-          </Card>
-        </div>
+            +12% cette semaine
+          </span>
+        </Card>
       </div>
 
       {/* KPIs */}
@@ -87,8 +80,8 @@ export function DashboardView({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 24,
-          marginBottom: 32,
+          gap: 20,
+          marginBottom: 28,
         }}
       >
         <StatCard
@@ -112,14 +105,14 @@ export function DashboardView({
           label="Présentiel"
           value={stats.presentiel}
           change={-5}
-          color={theme.warning}
+          color={theme.gold}
           delay={2}
         />
         <StatCard
           icon={Award}
           label="Formations"
           value={allFormations.length - 1}
-          color={theme.purple}
+          color={theme.blue}
           delay={3}
         />
       </div>
@@ -129,8 +122,8 @@ export function DashboardView({
         style={{
           display: "grid",
           gridTemplateColumns: "2fr 1fr",
-          gap: 24,
-          marginBottom: 24,
+          gap: 20,
+          marginBottom: 20,
         }}
       >
         <FormationBarChart data={formationData} theme={theme} />
@@ -142,7 +135,7 @@ export function DashboardView({
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
-          gap: 24,
+          gap: 20,
         }}
       >
         <NiveauDonutChart data={niveauData} theme={theme} />
